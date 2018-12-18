@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: liberty-endpoint-example 
+  namespace: default
+spec:
+  runLatest:
+    configuration:
+      build:
+        apiVersion: build.knative.dev/v1alpha1
+        kind: Build
+        spec:
+          serviceAccountName: build-bot
+          source:
+            git:
+              url: https://github.com/seabaylea/liberty-endpoint-example.git
+              revision: master
+          template:
+            name: liberty-endpoint 
+            arguments:
+              - name: IMAGE
+                value: docker.io/seabaylea/liberty-endpoint-example:latest
+      revisionTemplate:
+        spec:
+          container:
+            image: docker.io/seabaylea/liberty-endpoint-example:latest
+            imagePullPolicy: IfNotPresent
